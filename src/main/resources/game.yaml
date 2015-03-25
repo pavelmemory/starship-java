@@ -1,0 +1,12 @@
+window:
+    width: 600
+    height: 600
+    resizable: false
+    updateSpeed: 30
+game:
+    startX: 300
+    startY: 300
+    life: 100
+    damage: 10
+    image: starship/ship_c.png
+    speed: 5
