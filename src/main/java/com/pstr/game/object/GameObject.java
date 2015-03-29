@@ -5,18 +5,19 @@ import com.google.common.base.Predicate;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Set;
 
 public interface GameObject {
 
     final static Point DEATH_POINT = new Point(-100, -100);
 
-    void move(int direction, boolean pressed);
+    boolean setDirection(int direction, boolean pressed);
 
     void move();
 
     void draw(Graphics2D g2d);
 
-    GameObject fire();
+    Set<GameObject> fire();
 
     boolean isAttackState();
 
@@ -47,4 +48,6 @@ public interface GameObject {
             return !object.isAlive();
         }
     };
+
+    void setWeapon(FireStrategy weapon);
 }

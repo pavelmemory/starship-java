@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.List;
@@ -22,8 +23,10 @@ public class Drawer extends JPanel {
 
     @Override
     public void paint(Graphics g) {
-        g.clearRect(getX(), getY(), getWidth(), getHeight());
         super.paint(g);
+        g.setColor(Color.BLACK);
+        g.fillRect(getX(), getY(), getWidth(), getHeight());
+        g.setColor(Color.WHITE);
         for (GameObject object : objects) {
             object.draw((Graphics2D) g);
         }
@@ -36,7 +39,6 @@ public class Drawer extends JPanel {
 
     public void action(DrawerCommand drawerCommand) {
         Preconditions.checkNotNull(drawerCommand, "Unknown command for Drawer object");
-//        LOG.info("New action: " + drawerCommand);
         drawerCommand.action(this);
     }
 }

@@ -1,79 +1,49 @@
 package com.pstr.game.object;
 
+import com.google.common.collect.ImmutableSet;
 import com.pstr.game.main.GameConf;
+import com.pstr.game.utils.Files;
 
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
+import java.util.Set;
 
-public class Starship implements GameObject {
+public class Starship extends AbstractGameObject implements GameObject {
 
-    private VisibleObject visibleObject;
     private int attackTime = 3;
     private boolean attackState = false;
+    public final GameConf gameConf;
+    private FireStrategy fireStrategy = new SingleBulletFireStrategy();
 
     public Starship(GameConf gameConf) {
-        visibleObject = VisibleObject.create(
-                gameConf.game.image,
+        super(Files.asBufferedImage(gameConf.game.image),
                 new Point(gameConf.game.startX, gameConf.game.startY),
                 gameConf.game.speed);
+        this.gameConf = gameConf;
     }
 
     @Override
-    public void move(int direction, boolean pressed) {
-        visibleObject.direction(direction, pressed);
-    }
-
-    public void move() {
-        visibleObject.move();
-    }
-
-    @Override
-    public void draw(Graphics2D g2d) {
-        visibleObject.draw(g2d);
-    }
-
-    @Override
-    public GameObject fire() {
+    public Set<GameObject> fire() {
         if (attackState) {
             if (attackTime <= 0) {
                 attackTime = 3;
-                Point center = visibleObject.center();
-                int verticalDelta = visibleObject.scope().height / 2;
-                Bullet bullet = new Bullet(new Point(center.x, center.y - verticalDelta), 5);
-                bullet.move(KeyEvent.VK_UP, true);
-                return bullet;
+                return fireStrategy.fire(this);
             } else {
                 --attackTime;
             }
+        } else {
+            attackTime = 3;
         }
-        return null;
-    }
-
-    @Override
-    public boolean isAlive() {
-        return false;
-    }
-
-    @Override
-    public void destroy() {
-
-    }
-
-    @Override
-    public Point center() {
-        return null;
-    }
-
-    @Override
-    public Rectangle scope() {
-        return null;
+        return ImmutableSet.of();
     }
 
     @Override
     public GameObjectType type() {
         return GameObjectType.PLAYER;
+    }
+
+    @Override
+    public void setWeapon(FireStrategy weapon) {
+        fireStrategy = weapon;
     }
 
     public boolean isAttackState() {

@@ -20,6 +20,8 @@ public enum ControllerCommand {
 
     STOP(ImmutableSet.of(KeyEvent.VK_ESCAPE), ImmutableSet.<Character>of()),
 
+    WEAPON_CHANGED(ImmutableSet.<Integer>of(), ImmutableSet.<Character>of('w')),
+
     NONE(ImmutableSet.<Integer>of(), ImmutableSet.<Character>of());
 
     private static final Logger LOG = LoggerFactory.getLogger(ControllerCommand.class);

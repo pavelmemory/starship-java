@@ -8,5 +8,8 @@ game:
     startY: 300
     life: 100
     damage: 10
-    image: starship/ship_c.png
+    image: starship/white.png
+#starship/ship_c.png
     speed: 5
+    bullet: starship/bullet.white.png
+    bulletSpeed: 7

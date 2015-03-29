@@ -1,56 +1,19 @@
 package com.pstr.game.object;
 
-import java.awt.Graphics2D;
+import com.pstr.game.utils.Files;
+
 import java.awt.Point;
-import java.awt.Rectangle;
+import java.util.Set;
 
-public class Bullet implements GameObject {
+public class Bullet extends AbstractGameObject implements GameObject {
 
-    private VisibleObject visibleObject;
-
-    public Bullet(Point center, int speed) {
-        visibleObject = VisibleObject.create("starship/bullet.png", center, speed);
+    public Bullet(String bullet, Point center, int speed) {
+        super(Files.asBufferedImage(bullet), center, speed);
     }
 
     @Override
-    public void move(int direction, boolean pressed) {
-        visibleObject.direction(direction, pressed);
-    }
-
-    @Override
-    public void move() {
-        visibleObject.move();
-    }
-
-    @Override
-    public void draw(Graphics2D g2d) {
-        visibleObject.draw(g2d);
-    }
-
-    @Override
-    public GameObject fire() {
-        throw new IllegalStateException("Bullet object can not to do fire action");
-    }
-
-    @Override
-    public boolean isAlive() {
-        if (scope().y + scope().height < 0) return false;
-        return true;
-    }
-
-    @Override
-    public void destroy() {
-        visibleObject.center(GameObject.DEATH_POINT);
-    }
-
-    @Override
-    public Point center() {
-        return visibleObject.center();
-    }
-
-    @Override
-    public Rectangle scope() {
-        return visibleObject.scope();
+    public Set<GameObject> fire() {
+        throw new RuntimeException("NOT IMPLEMENTED!!!");
     }
 
     @Override
@@ -58,15 +21,19 @@ public class Bullet implements GameObject {
         return GameObjectType.BULLET;
     }
 
+    @Override
+    public void setWeapon(FireStrategy weapon) {
+        throw new RuntimeException("NOT IMPLEMENTED!!!");
+    }
 
     // candidates to another interface
     @Override
     public boolean isAttackState() {
-        return false;
+        throw new RuntimeException("NOT IMPLEMENTED!!!");
     }
 
     @Override
     public void setAttackState(boolean isAttackPerformed) {
-
+        throw new RuntimeException("NOT IMPLEMENTED!!!");
     }
 }

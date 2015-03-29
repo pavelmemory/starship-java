@@ -63,7 +63,7 @@ public class GObject {
         return object != null && scope().intersects(object.scope());
     }
 
-    public boolean direction(int direction, boolean pressed) {
+    public boolean setDirection(int direction, boolean pressed) {
         if (ControllerCommand.MOVE.keyCodes.contains(direction)) {
             if (pressed) {
                 this.direction.add(direction);
@@ -76,7 +76,7 @@ public class GObject {
 
     public void move() {
         scope = null;
-//        LOG.info("Object move: " + Joiner.on(",").join(direction));
+//        LOG.info("Object setDirection: " + Joiner.on(",").join(direction));
         if (direction.size() == 2) {
             for (Integer mDirection : direction) {
                 completeDirectionPositionChange(mDirection, true);
@@ -102,7 +102,7 @@ public class GObject {
                 center().x = center().x + speed;
                 break;
             default:
-                LOG.error("Unknown move direction [" + direction + "]");
+                LOG.error("Unknown setDirection direction [" + direction + "]");
         }
         return this;
     }

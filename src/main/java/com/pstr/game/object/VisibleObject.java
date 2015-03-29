@@ -21,7 +21,7 @@ public class VisibleObject extends GObject {
         return new VisibleObject(Files.asBufferedImage(picturePath), center, speed);
     }
 
-    private VisibleObject(BufferedImage image, Point center, int speed) {
+    protected VisibleObject(BufferedImage image, Point center, int speed) {
         super(center, image.getWidth(), image.getHeight(), speed);
         this.image = image;
     }

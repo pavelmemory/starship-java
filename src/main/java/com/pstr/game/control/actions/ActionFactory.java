@@ -6,6 +6,7 @@ import com.pstr.game.control.actions.attack.AttackActionFactory;
 import com.pstr.game.control.actions.move.MoveActionFactory;
 import com.pstr.game.control.actions.none.NoneActionFactory;
 import com.pstr.game.control.actions.start.StartActionFactory;
+import com.pstr.game.control.actions.weapon.WeaponChangedActionFactory;
 
 import java.awt.event.KeyEvent;
 import java.util.Map;
@@ -18,6 +19,7 @@ public abstract class ActionFactory {
         factoryMap.put(ControllerCommand.MOVE, new MoveActionFactory());
         factoryMap.put(ControllerCommand.NONE, new NoneActionFactory());
         factoryMap.put(ControllerCommand.ATTACK, new AttackActionFactory());
+        factoryMap.put(ControllerCommand.WEAPON_CHANGED, new WeaponChangedActionFactory());
 //        factoryMap.put(ControllerCommand.STOP, new StopActionFactory());
     }
 

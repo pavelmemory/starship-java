@@ -4,6 +4,7 @@ import com.pstr.game.control.actions.Action;
 import com.pstr.game.object.GameObject;
 
 import java.util.List;
+import java.util.Set;
 
 public interface GameState extends Initializer {
 
@@ -16,4 +17,6 @@ public interface GameState extends Initializer {
     void changeBy(Action action);
 
     boolean isOnAir();
+
+    void addObjects(Set<GameObject> objects);
 }

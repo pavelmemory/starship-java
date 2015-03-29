@@ -7,4 +7,6 @@ public class Game {
     public int damage;
     public int speed;
     public String image;
+    public String bullet;
+    public int bulletSpeed;
 }
