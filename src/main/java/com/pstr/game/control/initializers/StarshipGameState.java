@@ -3,6 +3,7 @@ package com.pstr.game.control.initializers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
+import com.pstr.game.control.ControllerCommand;
 import com.pstr.game.control.actions.Action;
 import com.pstr.game.main.GameConf;
 import com.pstr.game.object.GameObject;
@@ -54,6 +55,7 @@ public class StarshipGameState implements GameState {
 
     @Override
     public void addObject(GameObject object) {
+        if (object == null) return;
         switch (object.type()) {
             case STARSHIP:
                 enemies.add(object);
@@ -72,6 +74,7 @@ public class StarshipGameState implements GameState {
 
     @Override
     public void changeBy(Action action) {
+        if (!initialized && !action.getControllerCommand().equals(ControllerCommand.START)) return;
         switch (action.getControllerCommand()) {
             case MOVE:
                 moveCase(action);
@@ -128,8 +131,8 @@ public class StarshipGameState implements GameState {
                 break;
             case TYPED:
 //                player.setAttackState(false);
-                GameObject fire = player.fire();
-                addObject(fire);
+//                GameObject fire = player.fire();
+//                addObject(fire);
                 break;
             default:
                 throw new RuntimeException(new OperationNotSupportedException());

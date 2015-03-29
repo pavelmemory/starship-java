@@ -103,10 +103,9 @@ public class SimpleController implements Controller, ActionListener {
 
     private void attackPhase() {
         GameObject player = state.getPlayer();
-        if (player.isAttackState()) {
-            GameObject bullet = player.fire();
-            state.addObject(bullet);
-        }
+        GameObject bullet = player.fire();
+        state.addObject(bullet);
+
     }
 
     private void movePhase() {

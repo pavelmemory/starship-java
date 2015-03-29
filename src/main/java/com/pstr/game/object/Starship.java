@@ -36,11 +36,19 @@ public class Starship implements GameObject {
 
     @Override
     public GameObject fire() {
-        Point center = visibleObject.center();
-        int verticalDelta = visibleObject.scope().height / 2;
-        Bullet bullet = new Bullet(new Point(center.x, center.y - verticalDelta), 5);
-        bullet.move(KeyEvent.VK_UP, true);
-        return bullet;
+        if (attackState) {
+            if (attackTime <= 0) {
+                attackTime = 3;
+                Point center = visibleObject.center();
+                int verticalDelta = visibleObject.scope().height / 2;
+                Bullet bullet = new Bullet(new Point(center.x, center.y - verticalDelta), 5);
+                bullet.move(KeyEvent.VK_UP, true);
+                return bullet;
+            } else {
+                --attackTime;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -69,14 +77,7 @@ public class Starship implements GameObject {
     }
 
     public boolean isAttackState() {
-        if (attackState && attackTime == 0) {
-            attackTime = 3;
-            return true;
-        }
-        else {
-            attackTime -= 1;
-            return false;
-        }
+        return attackState;
     }
 
     public void setAttackState(boolean isAttackPerformed) {
