@@ -17,7 +17,7 @@ public class Run extends JFrame {
         setResizable(gameConf.window.resizable);
         Drawer drawer = new Drawer(this);
         Controller controller = new SimpleController(this, gameConf, drawer);
-
+        controller.start();
     }
 
     public static void main(String[] args) throws IOException {

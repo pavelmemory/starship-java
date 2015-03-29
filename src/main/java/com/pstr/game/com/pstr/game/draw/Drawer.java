@@ -25,7 +25,7 @@ public class Drawer extends JPanel {
         g.clearRect(getX(), getY(), getWidth(), getHeight());
         super.paint(g);
         for (GameObject object : objects) {
-            object.update((Graphics2D) g);
+            object.draw((Graphics2D) g);
         }
     }
 

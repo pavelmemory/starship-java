@@ -1,5 +1,6 @@
 package com.pstr.game.control;
 
+import com.pstr.game.control.actions.ActionPressEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,26 +17,20 @@ public class KeyboardController implements KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-        LOG.info("Event keyTyped: " + e);
-        int keyCode = e.getKeyCode();
-        ControllerCommand actionCommand = ControllerCommand.getActionCommand(keyCode);
-        if (actionCommand != null) actionCommand.actionTyped(controller);
+    public void keyTyped(KeyEvent event) {
+        LOG.info("Event keyTyped: " + event);
+        controller.newEvent(event, ActionPressEvent.TYPED);
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-        LOG.info("Event keyPressed: " + e);
-        int keyCode = e.getKeyCode();
-        ControllerCommand actionCommand = ControllerCommand.getActionCommand(keyCode);
-        if (actionCommand != null) actionCommand.actionPress(controller, keyCode);
+    public void keyPressed(KeyEvent event) {
+        LOG.info("Event keyPressed: " + event);
+        controller.newEvent(event, ActionPressEvent.PRESSED);
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-        LOG.info("Event keyReleased: " + e);
-        int keyCode = e.getKeyCode();
-        ControllerCommand actionCommand = ControllerCommand.getActionCommand(keyCode);
-        if (actionCommand != null) actionCommand.actionReleased(controller, keyCode);
+    public void keyReleased(KeyEvent event) {
+        LOG.info("Event keyReleased: " + event);
+        controller.newEvent(event, ActionPressEvent.RELEASED);
     }
 }

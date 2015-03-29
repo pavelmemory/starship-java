@@ -1,9 +1,9 @@
 package com.pstr.game.object;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import com.pstr.game.control.ControllerCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +64,7 @@ public class GObject {
     }
 
     public boolean direction(int direction, boolean pressed) {
-        if (MOVE_KEY_CODES.contains(direction)) {
+        if (ControllerCommand.MOVE.keyCodes.contains(direction)) {
             if (pressed) {
                 this.direction.add(direction);
             } else {
@@ -76,7 +76,7 @@ public class GObject {
 
     public void move() {
         scope = null;
-        LOG.info("Object move: " + Joiner.on(",").join(direction));
+//        LOG.info("Object move: " + Joiner.on(",").join(direction));
         if (direction.size() == 2) {
             for (Integer mDirection : direction) {
                 completeDirectionPositionChange(mDirection, true);

@@ -1,6 +1,5 @@
 package com.pstr.game.object;
 
-import com.pstr.game.control.initializers.GameState;
 import com.pstr.game.main.GameConf;
 
 import java.awt.Graphics2D;
@@ -11,9 +10,8 @@ import java.awt.event.KeyEvent;
 public class Starship implements GameObject {
 
     private VisibleObject visibleObject;
-    private boolean isInMove = false;
-    private GameState gameState = null;
     private int attackTime = 3;
+    private boolean attackState = false;
 
     public Starship(GameConf gameConf) {
         visibleObject = VisibleObject.create(
@@ -24,7 +22,16 @@ public class Starship implements GameObject {
 
     @Override
     public void move(int direction, boolean pressed) {
-        isInMove = visibleObject.direction(direction, pressed);
+        visibleObject.direction(direction, pressed);
+    }
+
+    public void move() {
+        visibleObject.move();
+    }
+
+    @Override
+    public void draw(Graphics2D g2d) {
+        visibleObject.draw(g2d);
     }
 
     @Override
@@ -57,25 +64,12 @@ public class Starship implements GameObject {
     }
 
     @Override
-    public void update(Graphics2D g) {
-        visibleObject.draw(g, isInMove);
-        if (gameState != null && isAttackTime()) {
-            gameState.addObject(fire());
-        }
-    }
-
-    @Override
     public GameObjectType type() {
         return GameObjectType.PLAYER;
     }
 
-    @Override
-    public void automateFire(GameState gameState) {
-        this.gameState = gameState;
-    }
-
-    public boolean isAttackTime() {
-        if (attackTime == 0) {
+    public boolean isAttackState() {
+        if (attackState && attackTime == 0) {
             attackTime = 3;
             return true;
         }
@@ -83,5 +77,9 @@ public class Starship implements GameObject {
             attackTime -= 1;
             return false;
         }
+    }
+
+    public void setAttackState(boolean isAttackPerformed) {
+        attackState = isAttackPerformed;
     }
 }

@@ -26,8 +26,7 @@ public class VisibleObject extends GObject {
         this.image = image;
     }
 
-    public void draw(Graphics2D g2d, boolean isInMove) {
-        if (isInMove) move();
+    public void draw(Graphics2D g2d) {
         g2d.drawImage(image, scope().x, scope().y, null);
     }
 }

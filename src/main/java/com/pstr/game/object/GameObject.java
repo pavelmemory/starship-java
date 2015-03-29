@@ -1,7 +1,6 @@
 package com.pstr.game.object;
 
 import com.google.common.base.Predicate;
-import com.pstr.game.control.initializers.GameState;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -13,7 +12,15 @@ public interface GameObject {
 
     void move(int direction, boolean pressed);
 
+    void move();
+
+    void draw(Graphics2D g2d);
+
     GameObject fire();
+
+    boolean isAttackState();
+
+    void setAttackState(boolean isAttackPerformed);
 
     boolean isAlive();
 
@@ -23,11 +30,7 @@ public interface GameObject {
 
     Rectangle scope();
 
-    void update(Graphics2D g);
-
     GameObjectType type();
-
-    void automateFire(GameState gameState);
 
     public final Predicate<GameObject> alivePredicate = new Predicate<GameObject>() {
 

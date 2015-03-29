@@ -1,7 +1,5 @@
 package com.pstr.game.object;
 
-import com.pstr.game.control.initializers.GameState;
-
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -17,6 +15,16 @@ public class Bullet implements GameObject {
     @Override
     public void move(int direction, boolean pressed) {
         visibleObject.direction(direction, pressed);
+    }
+
+    @Override
+    public void move() {
+        visibleObject.move();
+    }
+
+    @Override
+    public void draw(Graphics2D g2d) {
+        visibleObject.draw(g2d);
     }
 
     @Override
@@ -46,17 +54,19 @@ public class Bullet implements GameObject {
     }
 
     @Override
-    public void update(Graphics2D g) {
-        visibleObject.draw(g, true);
-    }
-
-    @Override
     public GameObjectType type() {
         return GameObjectType.BULLET;
     }
 
+
+    // candidates to another interface
     @Override
-    public void automateFire(GameState gameState) {
-        throw new IllegalStateException("Bullet can't to fire, even automate!");
+    public boolean isAttackState() {
+        return false;
+    }
+
+    @Override
+    public void setAttackState(boolean isAttackPerformed) {
+
     }
 }
