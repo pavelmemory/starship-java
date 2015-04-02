@@ -1,30 +1,29 @@
 package com.pstr.game.control.initializers;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 import com.pstr.game.control.ControllerCommand;
 import com.pstr.game.control.actions.Action;
-import com.pstr.game.main.GameConf;
-import com.pstr.game.object.DoubleBulletFireStategy;
+import com.pstr.game.main.*;
+import com.pstr.game.object.*;
 import com.pstr.game.object.GameObject;
-import com.pstr.game.object.Starship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.naming.OperationNotSupportedException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 
 public class StarshipGameState implements GameState {
     private static final Logger LOG = LoggerFactory.getLogger(StarshipGameState.class);
     private boolean initialized = false;
     private final GameConf gameConf;
-    private GameObject player;
-    private Set<GameObject> objects;
-    private Set<GameObject> enemies;
+
+    private Map<Class<? extends GameObject>, Set<GameObject>> objects = Maps.newHashMap();
+    {
+        objects.put(Starship.class, new HashSet<GameObject>());
+        objects.put(Bullet.class, new HashSet<GameObject>());
+        objects.put(EnemyStarship.class, new HashSet<GameObject>());
+    }
 
     public StarshipGameState(GameConf gameConf) {
         this.gameConf = gameConf;
@@ -34,44 +33,32 @@ public class StarshipGameState implements GameState {
     public void init() {
         LOG.info("Initialization start");
         if (!initialized) {
-            player = new Starship(gameConf);
-            objects = Sets.newHashSet();
-            enemies = Sets.newHashSet();
+            objects.get(Starship.class).add(Starship.create(gameConf));
+            objects.get(EnemyStarship.class).add(EnemyStarship.create(gameConf, 50, 50));
+            objects.get(EnemyStarship.class).add(EnemyStarship.create(gameConf, 200, 50));
         }
         initialized = true;
         LOG.info("Initialization successfully completed");
     }
 
     @Override
-    public List<GameObject> getObjects() {
-        if (!initialized) return ImmutableList.of();
-        if (!objects.isEmpty()) {
-            objects.retainAll(Sets.newHashSet(Iterators.filter(objects.iterator(), GameObject.alivePredicate)));
+    public Set<GameObject> getObjects() {
+        if (!initialized) return ImmutableSet.of();
+        ImmutableSet.Builder<GameObject> builder = ImmutableSet.builder();
+        for (Set<GameObject> o : objects.values()) {
+            builder.addAll(o);
         }
-        if (!enemies.isEmpty()) {
-            enemies.retainAll(Sets.newHashSet(Iterators.filter(enemies.iterator(), GameObject.alivePredicate)));
-        }
-        List<GameObject> gameObjects = ImmutableList.<GameObject>builder().add(player).addAll(objects).addAll(enemies).build();
-        return gameObjects;
+        return builder.build();
     }
 
     @Override
     public void addObject(GameObject object) {
-        if (object == null) return;
-        switch (object.type()) {
-            case STARSHIP:
-                enemies.add(object);
-                break;
-            case BULLET:
-                objects.add(object);
-                break;
-            default:
-        }
+        objects.get(object.getClass()).add(object);
     }
 
     @Override
     public GameObject getPlayer() {
-        return player;
+        return objects.get(Starship.class).iterator().next();
     }
 
     @Override
@@ -83,6 +70,11 @@ public class StarshipGameState implements GameState {
     @Override
     public boolean isOnAir() {
         return initialized;
+    }
+
+    @Override
+    public Set<? extends GameObject> getObjects(Class<? extends GameObject> objectClass) {
+        return objects.get(objectClass);
     }
 
     @Override
@@ -110,10 +102,10 @@ public class StarshipGameState implements GameState {
         public void action(Action action) {
             switch (action.getPressEvent()) {
                 case PRESSED:
-                    player.setAttackState(true);
+                    getPlayer().setAttackState(true);
                     break;
                 case RELEASED:
-                    player.setAttackState(false);
+                    getPlayer().setAttackState(false);
                     break;
                 case TYPED: break;
                 default:
@@ -163,7 +155,13 @@ public class StarshipGameState implements GameState {
     private class WeaponChangedCase implements ActionCase {
         @Override
         public void action(Action action) {
-            getPlayer().setWeapon(new DoubleBulletFireStategy());
+            FireStrategy weapon = getPlayer().getWeapon();
+            if (weapon instanceof  DoubleBulletFireStategy) {
+                getPlayer().setWeapon(new SingleBulletFireStrategy());
+            }
+            else {
+                getPlayer().setWeapon(new DoubleBulletFireStategy());
+            }
         }
     }
 

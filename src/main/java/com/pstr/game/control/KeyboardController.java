@@ -4,6 +4,7 @@ import com.pstr.game.control.actions.ActionPressEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -12,7 +13,8 @@ public class KeyboardController implements KeyListener {
     private static final Logger LOG = LoggerFactory.getLogger(KeyboardController.class);
     private final Controller controller;
 
-    public KeyboardController(Controller controller) {
+    public KeyboardController(Controller controller, Frame frame) {
+        frame.addKeyListener(this);
         this.controller = controller;
     }
 

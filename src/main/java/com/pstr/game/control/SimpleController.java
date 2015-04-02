@@ -9,6 +9,8 @@ import com.pstr.game.control.actions.ActionFactory;
 import com.pstr.game.control.actions.ActionPressEvent;
 import com.pstr.game.control.initializers.*;
 import com.pstr.game.main.GameConf;
+import com.pstr.game.object.Bullet;
+import com.pstr.game.object.EnemyStarship;
 import com.pstr.game.object.GameObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +20,7 @@ import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 public class SimpleController implements Controller, ActionListener {
     private static Logger LOG = LoggerFactory.getLogger(SimpleController.class);
@@ -42,14 +41,18 @@ public class SimpleController implements Controller, ActionListener {
     }
 
     public SimpleController(JFrame frame, GameConf gameConf, Drawer drawer) {
-        frame.addKeyListener(new KeyboardController(this));
         this.gameConf = gameConf;
         this.drawer = drawer;
+        registerControllerListener(frame);
 
         areaInitializer = new StarsLightGameAreaInitializer(gameConf);
         objectsInitializer = new StarshipGameObjectsInitializer(gameConf);
         state = new StarshipGameState(gameConf);
         initializers = ImmutableSet.of(areaInitializer, objectsInitializer);
+    }
+
+    private void registerControllerListener(JFrame frame) {
+        new KeyboardController(this, frame);
     }
 
     @Override
@@ -80,9 +83,7 @@ public class SimpleController implements Controller, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        updateStatePhase(ActionPressEvent.RELEASED);
-        updateStatePhase(ActionPressEvent.PRESSED);
-        updateStatePhase(ActionPressEvent.TYPED);
+        updateStatePhase();
         if (getState().isOnAir()) {
             movePhase();
             attackPhase();
@@ -90,7 +91,35 @@ public class SimpleController implements Controller, ActionListener {
         redrawPhase();
     }
 
-    private void updateStatePhase(ActionPressEvent actionPressEvent) {
+    private void updateStatePhase() {
+        updateStatePhaseByCommand(ActionPressEvent.RELEASED);
+        updateStatePhaseByCommand(ActionPressEvent.PRESSED);
+        updateStatePhaseByCommand(ActionPressEvent.TYPED);
+        calculateDamage();
+    }
+
+    private void calculateDamage() {
+        Set<? extends GameObject> bullets = getState().getObjects(Bullet.class);
+        Set<? extends GameObject> enemies = getState().getObjects(EnemyStarship.class);
+        Iterator<? extends GameObject> bulletIterator = bullets.iterator();
+
+        while(bulletIterator.hasNext()) {
+            GameObject bullet = bulletIterator.next();
+            Iterator<? extends GameObject> enemiesIterator = enemies.iterator();
+            while (enemiesIterator.hasNext()) {
+                GameObject enemy = enemiesIterator.next();
+                if (bullet.damage(enemy)) {
+                    bulletIterator.remove();
+                    if (!enemy.isAlive()) {
+                        enemiesIterator.remove();
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    private void updateStatePhaseByCommand(ActionPressEvent actionPressEvent) {
         Queue<KeyEvent> keyEvents = commands.get(actionPressEvent);
         while(!keyEvents.isEmpty()) {
             KeyEvent event = keyEvents.poll();

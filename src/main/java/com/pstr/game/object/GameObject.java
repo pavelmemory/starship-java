@@ -50,4 +50,13 @@ public interface GameObject {
     };
 
     void setWeapon(FireStrategy weapon);
+
+    FireStrategy getWeapon();
+
+    boolean damage(GameObject enemy);
+
+    boolean intersect(GameObject object);
+
+    // return 'true' if destroyed
+    boolean damageOn(int damage);
 }

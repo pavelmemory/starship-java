@@ -11,7 +11,10 @@ public class SingleBulletFireStrategy implements FireStrategy {
     public Set<GameObject> fire(Starship starship) {
         Point center = starship.center();
         int verticalDelta = starship.scope().height / 2;
-        Bullet bullet = new Bullet(starship.gameConf.game.bullet, new Point(center.x, center.y - verticalDelta), starship.gameConf.game.bulletSpeed);
+        Bullet bullet = Bullet.create(
+                starship.getGameConf().game.player.bullet,
+                new Point(center.x, center.y - verticalDelta),
+                starship.getGameConf().game.player.bulletSpeed, starship.getGameConf().game.player.damage);
         bullet.setDirection(KeyEvent.VK_UP, true);
         return ImmutableSet.<GameObject>of(bullet);
     }

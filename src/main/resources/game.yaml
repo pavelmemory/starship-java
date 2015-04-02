@@ -6,10 +6,17 @@ window:
 game:
     startX: 300
     startY: 300
-    life: 100
-    damage: 10
-    image: starship/white.png
-#starship/ship_c.png
-    speed: 5
-    bullet: starship/bullet.white.png
-    bulletSpeed: 7
+    player:
+        life: 100
+        damage: 10
+        image: starship/white.png
+        speed: 5
+        bullet: starship/bullet.white.png
+        bulletSpeed: 7
+    enemy1level:
+        life: 100
+        damage: 10
+        image: starship/enemy_l1.yellow.png
+        speed: 5
+        bullet: starship/bullet_l1.yellow.png
+        bulletSpeed: 7

@@ -1,7 +1,7 @@
 package com.pstr.game.com.pstr.game.draw;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.pstr.game.object.GameObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,11 +11,11 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.List;
+import java.util.Set;
 
 public class Drawer extends JPanel {
     private static Logger LOG = LoggerFactory.getLogger(Drawer.class);
-    private List<GameObject> objects = Lists.newLinkedList();
+    private Set<GameObject> objects = Sets.newHashSet();
 
     public Drawer(JFrame frame) {
         frame.add(this);
@@ -32,7 +32,7 @@ public class Drawer extends JPanel {
         }
     }
 
-    public void setObjects(List<GameObject> objects) {
+    public void setObjects(Set<GameObject> objects) {
         Preconditions.checkNotNull(objects);
         this.objects = objects;
     }
