@@ -1,6 +1,6 @@
 package com.pstr.game;
 
-import com.pstr.game.object.VisibleObject;
+import com.pstr.game.object.Visible2DObjectModel;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,17 +10,17 @@ public class TestVisibleObject extends Assert {
 
     @Test(expected = IllegalArgumentException.class)
     public void visibleObjectMustHaveImage() {
-        VisibleObject.create(null, new Point(12, 23), 10);
+        Visible2DObjectModel.create(null, new Point(12, 23), 10);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void visibleObjectMustHaveImage2() {
-        VisibleObject.create("test_fail", new Point(12, 23), 0);
+        Visible2DObjectModel.create("test_fail", new Point(12, 23), 0);
     }
 
     @Test
     public void visibleObjectSuccessfullyCreated() {
-        VisibleObject visibleObject = VisibleObject.create("images/ships.png", new Point(12, 23), -100);
+        Visible2DObjectModel visibleObject = Visible2DObjectModel.create("images/ships.png", new Point(12, 23), -100);
         assertNotNull(visibleObject.scope());
     }
 }

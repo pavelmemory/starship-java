@@ -1,32 +1,17 @@
 package com.pstr.game.control.actions;
 
-import com.google.common.collect.Maps;
+import com.google.common.base.Preconditions;
 import com.pstr.game.control.ControllerCommand;
-import com.pstr.game.control.actions.attack.AttackActionFactory;
-import com.pstr.game.control.actions.move.MoveActionFactory;
-import com.pstr.game.control.actions.none.NoneActionFactory;
-import com.pstr.game.control.actions.start.StartActionFactory;
-import com.pstr.game.control.actions.weapon.WeaponChangedActionFactory;
 
 import java.awt.event.KeyEvent;
-import java.util.Map;
 
-public abstract class ActionFactory {
+public class ActionFactory {
 
-    private static Map<ControllerCommand, ActionFactory> factoryMap = Maps.newHashMap();
-    static {
-        factoryMap.put(ControllerCommand.START, new StartActionFactory());
-        factoryMap.put(ControllerCommand.MOVE, new MoveActionFactory());
-        factoryMap.put(ControllerCommand.NONE, new NoneActionFactory());
-        factoryMap.put(ControllerCommand.ATTACK, new AttackActionFactory());
-        factoryMap.put(ControllerCommand.WEAPON_CHANGED, new WeaponChangedActionFactory());
-//        factoryMap.put(ControllerCommand.STOP, new StopActionFactory());
-    }
-
-    public abstract Action create(KeyEvent event, ActionPressEvent pressEvent);
-
-    public static ActionFactory getFor(ControllerCommand command) {
-        return factoryMap.get(command);
+    public static Action create(ControllerCommand command, KeyEvent event, ActionPressEvent pressEvent) {
+        Preconditions.checkNotNull(command);
+        Preconditions.checkNotNull(event);
+        Preconditions.checkNotNull(pressEvent);
+        return new BaseAction(command, event, pressEvent);
     }
 
 }

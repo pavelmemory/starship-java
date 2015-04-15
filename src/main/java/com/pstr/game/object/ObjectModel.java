@@ -1,9 +1,9 @@
 package com.pstr.game.object;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import com.pstr.game.control.ControllerCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,23 +13,23 @@ import java.util.Set;
 
 import static java.awt.event.KeyEvent.*;
 
-public class GObject {
-    private static final Logger LOG = LoggerFactory.getLogger(GObject.class);
+public class ObjectModel {
+    private static final Logger LOG = LoggerFactory.getLogger(ObjectModel.class);
 
     private Point center;
     private int width;
     private int height;
     private Rectangle scope;
-    private int speed;
+    protected int speed;
     private final static Set<Integer> MOVE_KEY_CODES = ImmutableSet.of(VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT);
     private final Set<Integer> direction;
 
-    public GObject(Point center, int width, int height, int speed) {
+    public ObjectModel(Point center, int width, int height, int speed) {
         center(center);
         this.width = width;
         this.height = height;
         this.speed = speed;
-        this.direction = Sets.newHashSet();
+        this.direction = Sets.newHashSetWithExpectedSize(2);
     }
 
     public Point center() {
@@ -59,35 +59,29 @@ public class GObject {
         return rectangle != null && scope().intersects(rectangle);
     }
 
-    public boolean intersect(GObject object) {
+    public boolean intersect(ObjectModel object) {
         return object != null && scope().intersects(object.scope());
     }
 
-    public boolean setDirection(int direction, boolean pressed) {
-        if (ControllerCommand.MOVE.keyCodes.contains(direction)) {
-            if (pressed) {
-                this.direction.add(direction);
-            } else {
-                this.direction.remove(direction);
-            }
+    public void setDirection(int direction, boolean pressed) {
+        if (!MOVE_KEY_CODES.contains(direction)) throw new IllegalArgumentException("Does not support specified move direction: " + direction);
+        if (pressed) {
+            this.direction.add(direction);
+        } else {
+            this.direction.remove(direction);
         }
-        return !this.direction.isEmpty();
     }
 
     public void move() {
         scope = null;
 //        LOG.info("Object setDirection: " + Joiner.on(",").join(direction));
-        if (direction.size() == 2) {
-            for (Integer mDirection : direction) {
-                completeDirectionPositionChange(mDirection, true);
-            }
-        } else if (direction.size() == 1) {
-            completeDirectionPositionChange(direction.iterator().next(), false);
+        for (Integer mDirection : direction) {
+            completeDirectionPositionChange(mDirection, direction.size() > 1);
         }
     }
 
-    private GObject completeDirectionPositionChange(int direction, boolean multiDirection) {
-        int speed = multiDirection ? (int) (this.speed / 3.0 * 2): this.speed;
+    private void completeDirectionPositionChange(int direction, boolean multiDirection) {
+        int speed = multiDirection ? (int) (this.speed / 3.0 * 2) : this.speed;
         switch (direction) {
             case VK_UP:
                 center().y = center().y - speed;
@@ -102,8 +96,17 @@ public class GObject {
                 center().x = center().x + speed;
                 break;
             default:
-                LOG.error("Unknown setDirection direction [" + direction + "]");
+                LOG.error("Unknown direction: [" + direction + "]");
         }
-        return this;
+    }
+
+    public String toString() {
+        return MoreObjects.toStringHelper(this).omitNullValues()
+                .add("center", center())
+                .add("scope", scope())
+                .add("width", width)
+                .add("height", height)
+                .add("speed", speed)
+                .add("direction", direction).toString();
     }
 }

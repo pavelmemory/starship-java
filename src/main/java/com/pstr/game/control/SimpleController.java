@@ -8,10 +8,10 @@ import com.pstr.game.control.actions.Action;
 import com.pstr.game.control.actions.ActionFactory;
 import com.pstr.game.control.actions.ActionPressEvent;
 import com.pstr.game.control.initializers.*;
-import com.pstr.game.main.GameConf;
-import com.pstr.game.object.Bullet;
-import com.pstr.game.object.EnemyStarship;
+import com.pstr.game.main.configs.GameConf;
 import com.pstr.game.object.GameObject;
+import com.pstr.game.object.Starship;
+import com.pstr.game.object.attack.damage.Ammo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +58,7 @@ public class SimpleController implements Controller, ActionListener {
     @Override
     public void start() {
         LOG.info("Start game");
-        if (timer == null) timer = new Timer(gameConf.window.updateSpeed, this);
+        if (timer == null) timer = new Timer(gameConf.getWindow().updateSpeed, this);
         if (!timer.isRunning()) timer.start();
 
         for (Initializer initializer : initializers) initializer.init();
@@ -99,21 +99,23 @@ public class SimpleController implements Controller, ActionListener {
     }
 
     private void calculateDamage() {
-        Set<? extends GameObject> bullets = getState().getObjects(Bullet.class);
-        Set<? extends GameObject> enemies = getState().getObjects(EnemyStarship.class);
-        Iterator<? extends GameObject> bulletIterator = bullets.iterator();
+        Set<Ammo> ammos = getState().getAmmos();
+        Set<Starship> enemies = getState().getEnemies();
+        Iterator<Ammo> ammoIterator = ammos.iterator();
 
-        while(bulletIterator.hasNext()) {
-            GameObject bullet = bulletIterator.next();
-            Iterator<? extends GameObject> enemiesIterator = enemies.iterator();
+        while(ammoIterator.hasNext()) {
+            Ammo ammo = ammoIterator.next();
+            Iterator<Starship> enemiesIterator = enemies.iterator();
             while (enemiesIterator.hasNext()) {
-                GameObject enemy = enemiesIterator.next();
-                if (bullet.damage(enemy)) {
-                    bulletIterator.remove();
+                Starship enemy = enemiesIterator.next();
+                if (ammo.damage(enemy)) {
+                    ammoIterator.remove();
                     if (!enemy.isAlive()) {
                         enemiesIterator.remove();
                     }
                     break;
+                } else if (ammo.damage(state.getPlayer())) {
+                    ammoIterator.remove();
                 }
             }
         }
@@ -123,27 +125,34 @@ public class SimpleController implements Controller, ActionListener {
         Queue<KeyEvent> keyEvents = commands.get(actionPressEvent);
         while(!keyEvents.isEmpty()) {
             KeyEvent event = keyEvents.poll();
-            ControllerCommand command = ControllerCommand.defineAction(event);
-            ActionFactory factory = ActionFactory.getFor(command);
-            Action action = factory.create(event, actionPressEvent);
+            ControllerCommand command = ControllerCommand.defineCommand(event);
+            Action action = ActionFactory.create(command, event, actionPressEvent);
             getState().changeBy(action);
         }
     }
 
     private void attackPhase() {
-        GameObject player = state.getPlayer();
-        Set<GameObject> bullets = player.fire();
-        state.addObjects(bullets);
+        for (Starship enemy : getState().getEnemies()) {
+            starshipAttack(enemy, KeyEvent.VK_DOWN);
+        }
+        starshipAttack(state.getPlayer(), KeyEvent.VK_UP);
+    }
+
+    private void starshipAttack(Starship starship, int direction) {
+        if (starship.isInAttackState()) {
+            Set<Ammo> ammos = starship.attack(null, direction);
+            state.addAllAmmo(ammos);
+        }
     }
 
     private void movePhase() {
-        for (GameObject object : state.getObjects()) {
+        for (GameObject object : state.getAllGameObjects()) {
             object.move();
         }
     }
 
     private void redrawPhase() {
-        drawer.setObjects(state.getObjects());
+        drawer.setObjects(state.getAllGameObjects());
         drawer.action(DrawerCommand.REDRAW);
     }
 

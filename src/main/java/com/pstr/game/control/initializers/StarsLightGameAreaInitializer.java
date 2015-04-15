@@ -1,6 +1,6 @@
 package com.pstr.game.control.initializers;
 
-import com.pstr.game.main.GameConf;
+import com.pstr.game.main.configs.GameConf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

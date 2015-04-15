@@ -3,20 +3,29 @@ window:
     height: 600
     resizable: false
     updateSpeed: 30
-game:
+gameInitialConf:
     startX: 300
     startY: 300
-    player:
-        life: 100
-        damage: 10
-        image: starship/white.png
-        speed: 5
-        bullet: starship/bullet.white.png
-        bulletSpeed: 7
-    enemy1level:
-        life: 100
-        damage: 10
-        image: starship/enemy_l1.yellow.png
-        speed: 5
-        bullet: starship/bullet_l1.yellow.png
-        bulletSpeed: 7
+    objects:
+        - type: STARSHIP
+          live: 100
+          speed: 5
+          image: starship/white.png
+
+        - type: ENEMY_STARSHIP_L1
+          live: 100
+          speed: 5
+          image: starship/enemy_l1.yellow.png
+
+    weapons:
+        - type: WHITE_BULLET
+          speed: 7
+          damage: 10
+          image: starship/bullet.white.png
+          attackSpeed: 3
+
+        - type: YELLOW_BULLET
+          speed: 7
+          damage: 10
+          image: starship/bullet_l1.yellow.png
+          attackSpeed: 5

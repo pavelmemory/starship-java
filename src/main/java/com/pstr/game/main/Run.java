@@ -3,6 +3,7 @@ package com.pstr.game.main;
 import com.pstr.game.com.pstr.game.draw.Drawer;
 import com.pstr.game.control.Controller;
 import com.pstr.game.control.SimpleController;
+import com.pstr.game.main.configs.GameConf;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -13,8 +14,8 @@ public class Run extends JFrame {
     public Run(GameConf gameConf) {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-        setSize(gameConf.window.width, gameConf.window.height);
-        setResizable(gameConf.window.resizable);
+        setSize(gameConf.getWindow().width, gameConf.getWindow().height);
+        setResizable(gameConf.getWindow().resizable);
         Drawer drawer = new Drawer(this);
         Controller controller = new SimpleController(this, gameConf, drawer);
         controller.start();

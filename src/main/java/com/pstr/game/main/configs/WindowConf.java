@@ -1,9 +1,6 @@
-package com.pstr.game.main;
+package com.pstr.game.main.configs;
 
-/**
- * Created by pstr on 3/21/2015.
- */
-public class Window {
+public class WindowConf {
     public int width = 0;
     public int height = 0;
     public boolean resizable = false;
