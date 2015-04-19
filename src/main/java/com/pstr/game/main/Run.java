@@ -28,5 +28,6 @@ public class Run extends JFrame {
                 new Run(gameConf);
             }
         });
+
     }
 }

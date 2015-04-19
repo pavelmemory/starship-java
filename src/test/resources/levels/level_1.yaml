@@ -1,0 +1,32 @@
+frames:
+    - sleep: 5
+      enemiesConf:
+        - start:
+            x: 30
+            y: 30
+          type: ENEMY_STARSHIP_L1
+          direction: [39, 40]
+
+        - start:
+            x: 300
+            y: 50
+          type: ENEMY_STARSHIP_L1
+          direction: [37, 40]
+
+        - start:
+            x: 500
+            y: 30
+          type: ENEMY_STARSHIP_L1
+          direction: [40]
+
+    - sleep: 5
+      enemiesConf:
+        - direction: [37, 40]
+        - direction: [39, 40]
+        - direction: [40]
+
+    - sleep: 5
+      enemiesConf:
+        - direction: [38, 39]
+        - direction: [40]
+        - direction: [37, 40]

@@ -23,8 +23,13 @@ public class DefaultStarship implements Starship {
     }
 
     @Override
-    public Set<Ammo> attack(Rectangle scope, int direction) {
+    public Set<Ammo> attack(int direction) {
         return attacker.attack(scope(), direction);
+    }
+
+    @Override
+    public Set<Ammo> attack(Rectangle scope, int direction) {
+        throw new RuntimeException("DO NOT USE!");
     }
 
     @Override
@@ -97,6 +102,11 @@ public class DefaultStarship implements Starship {
     @Override
     public Point center() {
         return visible2DObjectModel.center();
+    }
+
+    @Override
+    public void center(Point center) {
+        visible2DObjectModel.center(center);
     }
 
     @Override

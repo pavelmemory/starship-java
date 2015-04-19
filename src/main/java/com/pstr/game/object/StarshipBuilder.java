@@ -44,6 +44,12 @@ public class StarshipBuilder implements Builder {
     }
 
     @Override
+    public Builder direction(Set<Integer> to) {
+        directions.addAll(to);
+        return this;
+    }
+
+    @Override
     public Builder speed(Integer speed) {
         this.speed = speed;
         return this;

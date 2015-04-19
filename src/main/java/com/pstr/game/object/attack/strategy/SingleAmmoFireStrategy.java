@@ -33,13 +33,14 @@ public class SingleAmmoFireStrategy implements FireStrategy {
         Preconditions.checkState(getWeaponType() != null, "Weapon type not specified!");
 
         int x = scope.x + scope.width / 2;
-        int y = direction == KeyEvent.VK_UP ? scope.y + 2 : scope.y + scope.height + 2;
+        int y = scope.y;
         Ammo object = new AmmoBuilder(provider)
                 .weaponType(getWeaponType())
                 .damage(damage)
                 .direction(direction)
                 .position(new Point(x, y)).build();
-        LOG.info("New DamageDealer[Bullet] created: " + object);
+        object.center(new Point(x, direction == KeyEvent.VK_UP ? scope.y - object.scope().height - 2 : scope.y + scope.height + 5));
+                LOG.info("New DamageDealer[Bullet] created: " + object);
         return ImmutableSet.of(object);
     }
 

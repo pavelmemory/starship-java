@@ -18,6 +18,8 @@ public interface GameObject {
 
     Point center();
 
+    void center(Point center);
+
     Rectangle scope();
 
     boolean intersect(GameObject object);

@@ -13,8 +13,8 @@ gameInitialConf:
           image: starship/white.png
 
         - type: ENEMY_STARSHIP_L1
-          live: 100
-          speed: 5
+          live: 50
+          speed: 2
           image: starship/enemy_l1.yellow.png
 
     weapons:

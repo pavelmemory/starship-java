@@ -50,24 +50,6 @@ public class StarshipGameState implements GameState {
                     .position(new Point(gameConf.getGameInitialConf().getStartX(), gameConf.getGameInitialConf().getStartY()))
                     .gameObjectConfType(GameObjectType.STARSHIP)
                     .build();
-//
-
-//            player =
-//            Attacker attacker = AttackerFactory.create(FireStrategy.Type.SINGLE, gameConf.gameInitialConf.weapons, WeaponType.WHITE_BULLET);
-//            player.setAttacker(attacker);
-//            player.getStrategy().setDamage(10);
-//            player.center().x = gameConf.getGameInitialConf().getStartX();
-//            player.center().y = gameConf.getGameInitialConf().getStartY();
-//            objects.get(GameObjectType.STARSHIP).add(player);
-//
-//
-//            Starship enemyStarship = new YamlConfBuilder<Starship>(gameConf, GameObjectType.ENEMY_STARSHIP_L1).build();
-//            attacker = AttackerFactory.create(FireStrategy.Type.SINGLE, gameConf.gameInitialConf.weapons, WeaponType.YELLOW_BULLET);
-//            enemyStarship.setAttacker(attacker);
-//            enemyStarship.center().x = 200;
-//            enemyStarship.center().y = 50;
-//            enemyStarship.updateAttackState(true);
-//            objects.get(GameObjectType.ENEMY_STARSHIP_L1).add(enemyStarship);
         }
         initialized = true;
         LOG.info("Initialization successfully completed");
@@ -76,9 +58,7 @@ public class StarshipGameState implements GameState {
     @Override
     public Set<GameObject> getAllGameObjects() {
         if (!initialized) return ImmutableSet.of();
-        ImmutableSet.Builder<GameObject> builder = ImmutableSet.builder();
-        builder.addAll(enemies).addAll(ammos).addAll(objects).add(player);
-        return builder.build();
+        return ImmutableSet.<GameObject>builder().addAll(enemies).addAll(ammos).addAll(objects).add(player).build();
     }
 
     @Override

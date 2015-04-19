@@ -1,5 +1,0 @@
-circular: true
-movement:
-    - left:
-        points: 50
-        time: 3

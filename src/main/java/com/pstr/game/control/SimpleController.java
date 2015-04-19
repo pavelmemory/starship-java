@@ -7,8 +7,11 @@ import com.pstr.game.com.pstr.game.draw.DrawerCommand;
 import com.pstr.game.control.actions.Action;
 import com.pstr.game.control.actions.ActionFactory;
 import com.pstr.game.control.actions.ActionPressEvent;
+import com.pstr.game.control.ii.LevelInterpreter;
 import com.pstr.game.control.initializers.*;
 import com.pstr.game.main.configs.GameConf;
+import com.pstr.game.main.configs.YamlLevelConfProvider;
+import com.pstr.game.main.configs.YamlObjectConfProvider;
 import com.pstr.game.object.GameObject;
 import com.pstr.game.object.Starship;
 import com.pstr.game.object.attack.damage.Ammo;
@@ -28,10 +31,12 @@ public class SimpleController implements Controller, ActionListener {
     private final GameConf gameConf;
     private final Drawer drawer;
     private Timer timer;
+    private final LevelInterpreter levelInterpreter;
     private final GameAreaInitializer areaInitializer;
     private final GameObjectsInitializer objectsInitializer;
-    private final GameState state;
     private final Set<Initializer> initializers;
+    private final GameState state;
+    private final YamlLevelConfProvider levelConfProvider;
 
     private Map<ActionPressEvent, Queue<KeyEvent>> commands = Maps.newHashMap();
     {
@@ -49,6 +54,8 @@ public class SimpleController implements Controller, ActionListener {
         objectsInitializer = new StarshipGameObjectsInitializer(gameConf);
         state = new StarshipGameState(gameConf);
         initializers = ImmutableSet.of(areaInitializer, objectsInitializer);
+        levelConfProvider = new YamlLevelConfProvider("levels");
+        levelInterpreter = new LevelInterpreter(levelConfProvider.next(), new YamlObjectConfProvider(gameConf), gameConf);
     }
 
     private void registerControllerListener(JFrame frame) {
@@ -62,6 +69,7 @@ public class SimpleController implements Controller, ActionListener {
         if (!timer.isRunning()) timer.start();
 
         for (Initializer initializer : initializers) initializer.init();
+        levelInterpreter.start();
     }
 
     @Override
@@ -73,6 +81,7 @@ public class SimpleController implements Controller, ActionListener {
             LOG.info("Stop game");
             if (timer != null && timer.isRunning()) timer.stop();
             timer = null;
+            levelInterpreter.interrupt();
         }
     }
 
@@ -95,6 +104,9 @@ public class SimpleController implements Controller, ActionListener {
         updateStatePhaseByCommand(ActionPressEvent.RELEASED);
         updateStatePhaseByCommand(ActionPressEvent.PRESSED);
         updateStatePhaseByCommand(ActionPressEvent.TYPED);
+
+        getState().getEnemies().addAll(levelInterpreter.getEnemiesAndToEmpty());
+        getState().getObjects().addAll(levelInterpreter.getObjectsAndToEmpty());
         calculateDamage();
     }
 
@@ -104,19 +116,22 @@ public class SimpleController implements Controller, ActionListener {
         Iterator<Ammo> ammoIterator = ammos.iterator();
 
         while(ammoIterator.hasNext()) {
+            boolean ammoRemoved = false;
             Ammo ammo = ammoIterator.next();
             Iterator<Starship> enemiesIterator = enemies.iterator();
             while (enemiesIterator.hasNext()) {
                 Starship enemy = enemiesIterator.next();
                 if (ammo.damage(enemy)) {
                     ammoIterator.remove();
+                    ammoRemoved = true;
                     if (!enemy.isAlive()) {
                         enemiesIterator.remove();
                     }
                     break;
-                } else if (ammo.damage(state.getPlayer())) {
-                    ammoIterator.remove();
                 }
+            }
+            if (!ammoRemoved && ammo.damage(state.getPlayer())) {
+                ammoIterator.remove();
             }
         }
     }
@@ -140,7 +155,7 @@ public class SimpleController implements Controller, ActionListener {
 
     private void starshipAttack(Starship starship, int direction) {
         if (starship.isInAttackState()) {
-            Set<Ammo> ammos = starship.attack(null, direction);
+            Set<Ammo> ammos = starship.attack(direction);
             state.addAllAmmo(ammos);
         }
     }

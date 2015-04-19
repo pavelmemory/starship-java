@@ -22,6 +22,11 @@ public class DefaultAttacker implements Attacker {
     }
 
     @Override
+    public Set<Ammo> attack(int direction) {
+        throw new RuntimeException("DO NOT USE!!!");
+    }
+
+    @Override
     public Set<Ammo> attack(Rectangle scope, int direction) {
 //        LOG.info("Provided new attack from point: " + from);
         if (attackState) {

@@ -2,4 +2,30 @@ window:
     width: 600
     height: 600
     resizable: false
-    updateSpeed: 50
+    updateSpeed: 30
+gameInitialConf:
+    startX: 300
+    startY: 300
+    objects:
+        - type: STARSHIP
+          live: 100
+          speed: 5
+          image: starship/white.png
+
+        - type: ENEMY_STARSHIP_L1
+          live: 100
+          speed: 5
+          image: starship/enemy_l1.yellow.png
+
+    weapons:
+        - type: WHITE_BULLET
+          speed: 7
+          damage: 10
+          image: starship/bullet.white.png
+          attackSpeed: 3
+
+        - type: YELLOW_BULLET
+          speed: 7
+          damage: 10
+          image: starship/bullet_l1.yellow.png
+          attackSpeed: 5

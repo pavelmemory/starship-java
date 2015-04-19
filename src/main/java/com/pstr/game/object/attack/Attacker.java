@@ -8,6 +8,8 @@ import java.util.Set;
 
 public interface Attacker {
 
+    Set<Ammo> attack(int direction);
+
     Set<Ammo> attack(Rectangle scope, int direction);
 
     boolean isInAttackState();

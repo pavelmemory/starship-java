@@ -61,6 +61,11 @@ public class DefaultAmmo implements Ammo {
     }
 
     @Override
+    public void center(Point center) {
+        visible2DObjectModel.center(center);
+    }
+
+    @Override
     public Rectangle scope() {
         return visible2DObjectModel.scope();
     }
